@@ -12,6 +12,8 @@ import SignUp from "./components/Auth/SignUp";
 import ProductList from "./components/Product/ProductList";
 import Cart from "./pages/Cart";
 import Wishlist from "./pages/Wishlist";
+import Electronics from "./pages/Electronics";
+import Clothing from "./pages/Clothing";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -57,8 +59,12 @@ function App() {
               element={!user ? <SignUp /> : <Navigate to="/" />}
             />
             <Route
-              path="/:category"
-              element={user ? <ProductList /> : <Navigate to="/login" />}
+              path="/electronics"
+              element={user ? <Electronics /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/clothing"
+              element={user ? <Clothing /> : <Navigate to="/login" />}
             />
             <Route
               path="/cart"

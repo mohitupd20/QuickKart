@@ -3,10 +3,13 @@ import { useParams } from "react-router-dom";
 import { supabase } from "../../utils/supabase";
 import ProductCard from "./ProductCard";
 
-const ProductList = () => {
+const ProductList = ({ category: propCategory }) => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { category } = useParams();
+  const { category: routeCategory } = useParams();
+
+  // Use prop category if provided, otherwise use route category
+  const category = propCategory || routeCategory;
 
   useEffect(() => {
     fetchProducts();
@@ -14,11 +17,13 @@ const ProductList = () => {
 
   const fetchProducts = async () => {
     try {
-      const { data, error } = await supabase
-        .from("products")
-        .select("*")
-        .eq("category", category);
+      let query = supabase.from("products").select("*");
 
+      if (category) {
+        query = query.eq("category", category);
+      }
+
+      const { data, error } = await query;
       if (error) throw error;
       setProducts(data || []);
     } catch (error) {
@@ -39,14 +44,20 @@ const ProductList = () => {
   };
 
   if (loading) {
-    return <div>Loading products...</div>;
+    return (
+      <div className="flex justify-center items-center min-h-[200px]">
+        <div className="text-gray-500">Loading products...</div>
+      </div>
+    );
   }
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-gray-900 mb-6 capitalize">
-        {category}
-      </h2>
+      {category && (
+        <h2 className="text-2xl font-bold text-gray-900 mb-6 capitalize">
+          {category}
+        </h2>
+      )}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {products.map((product) => (
           <ProductCard
@@ -59,7 +70,9 @@ const ProductList = () => {
       </div>
       {products.length === 0 && (
         <p className="text-gray-500 text-center">
-          No products found in this category.
+          {category
+            ? `No products found in ${category} category.`
+            : "No products found."}
         </p>
       )}
     </div>
