@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { supabase } from "../../utils/supabase";
+import toast from "react-hot-toast";
 
 const ProductCard = ({ product, onAddToWishlist, onAddToCart }) => {
   const [loading, setLoading] = useState(false);
@@ -7,7 +8,7 @@ const ProductCard = ({ product, onAddToWishlist, onAddToCart }) => {
   const handleAddToWishlist = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase.from("wishlist").insert([
+      const { error } = await supabase.from("wishlist").insert([
         {
           user_id: (await supabase.auth.getUser()).data.user.id,
           product_id: product.id,
@@ -16,8 +17,13 @@ const ProductCard = ({ product, onAddToWishlist, onAddToCart }) => {
 
       if (error) throw error;
       onAddToWishlist(product);
+      toast.success("Added to wishlist!", {
+        duration: 2000,
+        icon: "❤️",
+      });
     } catch (error) {
       console.error("Error adding to wishlist:", error);
+      toast.error("Failed to add to wishlist");
     } finally {
       setLoading(false);
     }
@@ -26,7 +32,7 @@ const ProductCard = ({ product, onAddToWishlist, onAddToCart }) => {
   const handleAddToCart = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase.from("cart").insert([
+      const { error } = await supabase.from("cart").insert([
         {
           user_id: (await supabase.auth.getUser()).data.user.id,
           product_id: product.id,
@@ -36,8 +42,13 @@ const ProductCard = ({ product, onAddToWishlist, onAddToCart }) => {
 
       if (error) throw error;
       onAddToCart(product);
+      toast.success("Added to cart!", {
+        duration: 2000,
+        icon: "🛒",
+      });
     } catch (error) {
       console.error("Error adding to cart:", error);
+      toast.error("Failed to add to cart");
     } finally {
       setLoading(false);
     }

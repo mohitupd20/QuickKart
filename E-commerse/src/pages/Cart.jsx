@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../utils/supabase";
 import CartItem from "../components/Cart/CartItem";
+import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchCartItems();
@@ -64,6 +66,13 @@ const Cart = () => {
     );
   };
 
+  const handleCheckout = () => {
+    const total = calculateTotal();
+    navigate("/payment-options", {
+      state: { totalAmount: total },
+    });
+  };
+
   if (loading) {
     return <div>Loading cart...</div>;
   }
@@ -96,9 +105,9 @@ const Cart = () => {
             </div>
             <button
               className="mt-4 w-full bg-indigo-600 text-white py-3 px-4 rounded-md hover:bg-indigo-700 transition-colors"
-              onClick={() => alert("Checkout functionality coming soon!")}
+              onClick={handleCheckout}
             >
-              Proceed to Checkout
+              Proceed to Payment
             </button>
           </div>
         </>

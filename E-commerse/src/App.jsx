@@ -14,6 +14,9 @@ import Cart from "./pages/Cart";
 import Wishlist from "./pages/Wishlist";
 import Electronics from "./pages/Electronics";
 import Clothing from "./pages/Clothing";
+import PaymentOptions from "./pages/PaymentOptions";
+import PaymentSuccess from "./pages/PaymentSuccess";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -41,6 +44,7 @@ function App() {
   return (
     <Router>
       <div className="min-h-screen bg-gray-100">
+        <Toaster position="top-right" />
         <Header />
         <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
           <Routes>
@@ -73,6 +77,14 @@ function App() {
             <Route
               path="/wishlist"
               element={user ? <Wishlist /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/payment-options"
+              element={user ? <PaymentOptions /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/payment-success"
+              element={user ? <PaymentSuccess /> : <Navigate to="/login" />}
             />
           </Routes>
         </main>
